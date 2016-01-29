@@ -105,6 +105,28 @@ public abstract class GlimpseAbstractConsumer implements GlimpseConsumer {
 		}
 	}
 	
+	public GlimpseAbstractConsumer(Properties settings, String plainTextRule, String usersInvolvedID) {
+		init(settings);
+		try {
+			this.sendTextMessageWithLearnersList(connection, initContext, "serviceTopic", plainTextRule, usersInvolvedID, true);
+		} catch (JMSException e) {
+			e.printStackTrace();
+		} catch (NamingException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public GlimpseAbstractConsumer(Properties settings, String plainTextRule, String usersInvolvedID, String sessionID) {
+		init(settings);
+		try {
+			this.sendTextMessageWithLearnersList(connection, initContext, "serviceTopic", plainTextRule, usersInvolvedID, sessionID, true);
+		} catch (JMSException e) {
+			e.printStackTrace();
+		} catch (NamingException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	/**
 	 * 
 	 * This constructor allow to create a {@link GlimpseAbstractConsumer} object<br />
@@ -126,7 +148,7 @@ public abstract class GlimpseAbstractConsumer implements GlimpseConsumer {
 			e.printStackTrace();
 		}
 	}
-			
+	
 	/* (non-Javadoc)
 	 * @see javax.jms.MessageListener#onMessage(javax.jms.Message)
 	 */
@@ -287,6 +309,114 @@ public abstract class GlimpseAbstractConsumer implements GlimpseConsumer {
 			DebugMessages.ok(); 
 			DebugMessages.line(); }
 	}
+	
+	public void sendTextMessageWithLearnersList(TopicConnection connection, InitialContext initContext,
+												String serviceChannel, String textToSend, String usersInvolvedID, boolean debug)	throws JMSException, NamingException {
+		if (debug) {
+			DebugMessages.print(this.getClass().getSimpleName(),
+					"Creating Session "); }
+		TopicSession publishSession = connection.createTopicSession(false,Session.AUTO_ACKNOWLEDGE);
+		if (debug) {
+			DebugMessages.ok();
+			DebugMessages.print(this.getClass().getSimpleName(),
+					"Looking up for channel ");}
+		Topic connectionTopic = (Topic) initContext.lookup(serviceChannel);
+		if (debug) {
+			DebugMessages.ok();
+			DebugMessages.print(this.getClass().getSimpleName(),
+					"Creating Publisher "); }
+		TopicPublisher tPub = publishSession.createPublisher(connectionTopic);
+		if (debug) {
+			DebugMessages.ok();
+			DebugMessages.print(this.getClass().getSimpleName(),
+					"Creating Message "); }
+		TextMessage sendMessage = publishSession.createTextMessage();
+		sendMessage.setStringProperty("USERSINVOLVEDID", usersInvolvedID);
+		sendMessage.setStringProperty("SENDER", settings.getProperty("consumerName"));
+		sendMessage.setStringProperty("DESTINATION", "monitor");
+		sendMessage.setText(textToSend);
+		if (debug) {
+			DebugMessages.ok();
+			DebugMessages.print(this.getClass().getSimpleName(),
+					"Publishing message  "); }
+		tPub.publish(sendMessage);		
+		if (debug) {
+			DebugMessages.ok(); 
+			DebugMessages.line(); }
+	}
+	
+	public void sendTextMessageWithLearnersList(TopicConnection connection, InitialContext initContext,
+			String serviceChannel, String textToSend, String usersInvolvedID, String sessionID, boolean debug)	throws JMSException, NamingException {
+		if (debug) {
+			DebugMessages.print(this.getClass().getSimpleName(), "Creating Session ");
+		}
+		TopicSession publishSession = connection.createTopicSession(false, Session.AUTO_ACKNOWLEDGE);
+		if (debug) {
+			DebugMessages.ok();
+			DebugMessages.print(this.getClass().getSimpleName(), "Looking up for channel ");
+		}
+		Topic connectionTopic = (Topic) initContext.lookup(serviceChannel);
+		if (debug) {
+			DebugMessages.ok();
+			DebugMessages.print(this.getClass().getSimpleName(), "Creating Publisher ");
+		}
+		TopicPublisher tPub = publishSession.createPublisher(connectionTopic);
+		if (debug) {
+			DebugMessages.ok();
+			DebugMessages.print(this.getClass().getSimpleName(), "Creating Message ");
+		}
+		TextMessage sendMessage = publishSession.createTextMessage();
+		sendMessage.setStringProperty("USERSINVOLVEDID", usersInvolvedID);
+		sendMessage.setStringProperty("SESSIONID", sessionID);
+		sendMessage.setStringProperty("SENDER", settings.getProperty("consumerName"));
+		sendMessage.setStringProperty("DESTINATION", "monitor");
+		sendMessage.setText(textToSend);
+		if (debug) {
+			DebugMessages.ok();
+			DebugMessages.print(this.getClass().getSimpleName(), "Publishing message  ");
+		}
+		tPub.publish(sendMessage);
+		if (debug) {
+			DebugMessages.ok();
+			DebugMessages.line();
+		}
+}
+	
+	public void sendActionListMessageWithLearnerList(TopicConnection connection, InitialContext initContext, String serviceChannel, ComplexEventRuleActionListDocument actionList,
+													String usersInvolvedID, boolean debug) throws JMSException, NamingException {
+		if (debug) {
+			DebugMessages.print(this.getClass().getSimpleName(),
+					"Creating Session "); }
+		TopicSession publishSession = connection.createTopicSession(false,Session.AUTO_ACKNOWLEDGE);
+		if (debug) {
+			DebugMessages.ok();
+			DebugMessages.print(this.getClass().getSimpleName(),
+					"Looking up for channel ");}
+		Topic connectionTopic = (Topic) initContext.lookup(serviceChannel);
+		if (debug) {
+			DebugMessages.ok();
+			DebugMessages.print(this.getClass().getSimpleName(),
+					"Creating Publisher "); }
+		TopicPublisher tPub = publishSession.createPublisher(connectionTopic);
+		if (debug) {
+			DebugMessages.ok();
+			DebugMessages.print(this.getClass().getSimpleName(),
+					"Creating Message "); }
+		ObjectMessage sendMessage = publishSession.createObjectMessage();
+		sendMessage.setStringProperty("USERSINVOLVEDID", usersInvolvedID);
+		sendMessage.setStringProperty("SENDER", settings.getProperty("consumerName"));
+		sendMessage.setStringProperty("DESTINATION", "monitor");
+		sendMessage.setObject((Serializable)actionList);
+		if (debug) {
+			DebugMessages.ok();
+			DebugMessages.print(this.getClass().getSimpleName(),
+					"Publishing message  "); }
+		tPub.publish(sendMessage);	
+		if (debug) {
+			DebugMessages.ok(); 
+			DebugMessages.line(); }
+	}
+	
 	
 	/**
 	 * This method creates a subscriber object to send the evaluation request to the monitoring engine.

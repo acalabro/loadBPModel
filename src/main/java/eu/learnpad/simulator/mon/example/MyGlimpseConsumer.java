@@ -58,7 +58,18 @@ public class MyGlimpseConsumer extends GlimpseAbstractConsumer {
 			String plainTextRule) {
 		super(settings, plainTextRule);
 	}
+	
+	public MyGlimpseConsumer(Properties settings,
+			String plainTextRule, String usersInvolvedID) {
+		super(settings, plainTextRule, usersInvolvedID);
+	}
 
+	public MyGlimpseConsumer(Properties settings,
+			String plainTextRule, String usersInvolvedID, String sessionID) {
+		super(settings, plainTextRule, usersInvolvedID, sessionID);
+	}
+
+	
 	@Override
 	public void messageReceived(Message arg0) throws JMSException {
 		try {

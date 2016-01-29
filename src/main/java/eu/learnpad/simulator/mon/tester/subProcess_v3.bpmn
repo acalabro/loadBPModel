@@ -1,0 +1,409 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:tns="http://sourceforge.net/bpmn/definitions/_1425644268787" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:yaoqiang="http://bpmn.sourceforge.net" exporter="Yaoqiang BPMN Editor" exporterVersion="4.0" expressionLanguage="http://www.w3.org/1999/XPath" id="_1425644268787" name="" targetNamespace="http://sourceforge.net/bpmn/definitions/_1425644268787" typeLanguage="http://www.w3.org/2001/XMLSchema" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL http://bpmn.sourceforge.net/schemas/BPMN20.xsd">
+  <process id="FillQuestionnaireSubProcess" isClosed="false" isExecutable="true" name="Fill Questionnaire Sub Process" processType="None">
+    <extensionElements>
+      <activiti:executionListener class="it.cnr.isti.labsedc.glimpse.bpmn.SubProcessExecutionListener" event="start"/>
+      <yaoqiang:pageFormat height="841.8897637795276" imageableHeight="831.8897637795276" imageableWidth="588.1102362204724" imageableX="5.0" imageableY="5.0" orientation="0" width="598.1102362204724"/>
+      <yaoqiang:page background="#FFFFFF" horizontalCount="1" verticalCount="1"/>
+    </extensionElements>
+    <sequenceFlow id="wrongResponseA" name="Wrong Response" sourceRef="firstGateway" targetRef="scripttask1">
+      <extensionElements>
+        <yaoqiang:label offset-x="0.0" offset-y="13.0" x="0.0" y="11.0"/>
+      </extensionElements>
+    </sequenceFlow>
+    <sequenceFlow id="cond2A" name="Partially correct" sourceRef="firstGateway" targetRef="secondTopicPathTwo">
+      <extensionElements>
+        <yaoqiang:label offset-x="3.0" offset-y="-32.0" x="0.0" y="8.0"/>
+      </extensionElements>
+    </sequenceFlow>
+    <sequenceFlow id="cond1A" name="Correct" sourceRef="firstGateway" targetRef="SecondTopicPathOne">
+      <extensionElements>
+        <yaoqiang:label offset-x="0.0" offset-y="9.0" x="0.0" y="23.0"/>
+      </extensionElements>
+    </sequenceFlow>
+    <sequenceFlow id="F1_11" sourceRef="FirstTopic" targetRef="firstGateway"/>
+    <sequenceFlow id="flow1" sourceRef="startevent1" targetRef="FirstTopic"/>
+    <userTask activiti:assignee="kermit" completionQuantity="1" id="FirstTopic" implementation="##unspecified" isForCompensation="false" name="Training Step One" startQuantity="1">
+      <extensionElements>
+        <activiti:formProperty expression="${FirstQuestion}" id="FirstQuestion" type="string" writable="false"/>
+        <activiti:formProperty id="evaluateResponse" name="Check Response" required="true" type="enum">
+          <activiti:value id="B" name="B"/>
+          <activiti:value id="C" name="C"/>
+          <activiti:value id="D" name="D"/>
+        </activiti:formProperty>
+      </extensionElements>
+      <incoming>flow1</incoming>
+      <incoming>flow2</incoming>
+      <outgoing>F1_11</outgoing>
+      <outgoing>_4</outgoing>
+    </userTask>
+    <sequenceFlow id="flow2" sourceRef="scripttask1" targetRef="FirstTopic"/>
+    <userTask completionQuantity="1" id="secondTopicPathTwo" implementation="##unspecified" isForCompensation="false" name="Training Step Two:Low" startQuantity="1">
+      <extensionElements>
+        <activiti:executionListener class="it.cnr.isti.labsedc.glimpse.bpmn.SubProcessExecutionListener" event="start"/>
+      </extensionElements>
+      <incoming>cond2A</incoming>
+      <incoming>flow3</incoming>
+      <outgoing>_2</outgoing>
+      <outgoing>_5</outgoing>
+    </userTask>
+    <sequenceFlow id="cond2C" name="Partially correct" sourceRef="F2_10" targetRef="collectResponses">
+      <extensionElements>
+        <yaoqiang:label offset-x="0.0" offset-y="1.0" x="0.0" y="23.0"/>
+      </extensionElements>
+    </sequenceFlow>
+    <sequenceFlow id="wrongResponseC" name="Wrong Response" sourceRef="F2_10" targetRef="scripttask2">
+      <extensionElements>
+        <yaoqiang:label offset-x="-5.0" offset-y="0.0" x="0.0" y="17.0"/>
+      </extensionElements>
+    </sequenceFlow>
+    <sequenceFlow id="cond1C" name="Correct" sourceRef="F2_10" targetRef="collectResponses"/>
+    <sequenceFlow id="cond3B" name="Correct" sourceRef="F3_10" targetRef="collectResponses">
+      <extensionElements>
+        <yaoqiang:label offset-x="24.0" offset-y="0.0" x="0.0" y="11.0"/>
+      </extensionElements>
+    </sequenceFlow>
+    <sequenceFlow id="cond2B" name="Partially correct" sourceRef="F3_10" targetRef="collectResponses">
+      <extensionElements>
+        <yaoqiang:label offset-x="-13.0" offset-y="0.0" x="0.0" y="7.0"/>
+      </extensionElements>
+    </sequenceFlow>
+    <sequenceFlow id="wrongResponseB" name="Wrong response" sourceRef="F3_10" targetRef="scripttask3">
+      <extensionElements>
+        <yaoqiang:label offset-x="4.0" offset-y="-19.0" x="0.0" y="-11.0"/>
+      </extensionElements>
+    </sequenceFlow>
+    <sequenceFlow id="_2" sourceRef="secondTopicPathTwo" targetRef="F2_10"/>
+    <sequenceFlow id="_3" sourceRef="SecondTopicPathOne" targetRef="F3_10"/>
+    <userTask completionQuantity="1" id="SecondTopicPathOne" implementation="##unspecified" isForCompensation="false" name="Training Step Two:Normal" startQuantity="1">
+      <incoming>cond1A</incoming>
+      <incoming>flow4</incoming>
+      <outgoing>_3</outgoing>
+      <outgoing>_6</outgoing>
+    </userTask>
+    <sequenceFlow id="flow3" sourceRef="scripttask2" targetRef="secondTopicPathTwo"/>
+    <sequenceFlow id="flow4" sourceRef="scripttask3" targetRef="SecondTopicPathOne"/>
+    <userTask completionQuantity="1" id="collectResponses" implementation="##unspecified" isForCompensation="false" name="Collect responses" startQuantity="1">
+      <incoming>cond2C</incoming>
+      <incoming>cond1C</incoming>
+      <incoming>cond3B</incoming>
+      <incoming>cond2B</incoming>
+      <incoming>_4</incoming>
+      <incoming>_5</incoming>
+      <incoming>_6</incoming>
+      <outgoing>flow5</outgoing>
+    </userTask>
+    <scriptTask activiti:autoStoreVariables="false" completionQuantity="1" id="scripttask1" isForCompensation="false" name="Question Regeneration" scriptFormat="groovy" startQuantity="1">
+      <incoming>wrongResponseA</incoming>
+      <outgoing>flow2</outgoing>
+      <script><![CDATA[out.println "\n=== WRONG RESPONSE ON FIRST QUESTION ===";]]></script>
+    </scriptTask>
+    <scriptTask activiti:autoStoreVariables="false" completionQuantity="1" id="scripttask2" isForCompensation="false" name="Question Regeneration" scriptFormat="groovy" startQuantity="1">
+      <incoming>wrongResponseC</incoming>
+      <outgoing>flow3</outgoing>
+      <script><![CDATA[out.println "\n=== WRONG RESPONSE ON SECOND QUESTION PATH TWO ===";]]></script>
+    </scriptTask>
+    <scriptTask activiti:autoStoreVariables="false" completionQuantity="1" id="scripttask3" isForCompensation="false" name="Question Regeneration" scriptFormat="groovy" startQuantity="1">
+      <incoming>wrongResponseB</incoming>
+      <outgoing>flow4</outgoing>
+      <script><![CDATA[out.println "\n=== WRONG RESPONSE ON SECOND QUESTION PATH ONE ===";]]></script>
+    </scriptTask>
+    <sequenceFlow id="flow5" sourceRef="collectResponses" targetRef="endevent1"/>
+    <exclusiveGateway gatewayDirection="Unspecified" id="F3_10">
+      <incoming>_3</incoming>
+      <outgoing>cond3B</outgoing>
+      <outgoing>cond2B</outgoing>
+      <outgoing>wrongResponseB</outgoing>
+    </exclusiveGateway>
+    <exclusiveGateway gatewayDirection="Diverging" id="F2_10">
+      <incoming>_2</incoming>
+      <outgoing>cond2C</outgoing>
+      <outgoing>wrongResponseC</outgoing>
+      <outgoing>cond1C</outgoing>
+    </exclusiveGateway>
+    <exclusiveGateway gatewayDirection="Unspecified" id="firstGateway">
+      <incoming>F1_11</incoming>
+      <outgoing>wrongResponseA</outgoing>
+      <outgoing>cond2A</outgoing>
+      <outgoing>cond1A</outgoing>
+    </exclusiveGateway>
+    <startEvent id="startevent1" isInterrupting="true" name="Start" parallelMultiple="false">
+      <extensionElements>
+        <activiti:formProperty id="FirstQuestion" name="This is the text of the first question" required="true" type="string"/>
+        <activiti:formProperty default="5000" expression="desideredCompletionTime" id="desideredCompletionTime" type="string" variable="desideredCompletionTime" writable="false"/>
+        <activiti:executionListener class="it.cnr.isti.labsedc.glimpse.bpmn.SubProcessExecutionListener" event="start">
+          <activiti:field name="desideredCompletionTime">
+            <activiti:string><![CDATA[5000]]></activiti:string>
+          </activiti:field>
+        </activiti:executionListener>
+      </extensionElements>
+      <outgoing>flow1</outgoing>
+    </startEvent>
+    <sequenceFlow id="_4" name="Abandon session" sourceRef="FirstTopic" targetRef="collectResponses">
+      <extensionElements>
+        <yaoqiang:label offset-x="0.0" offset-y="286.0" x="-1.0" y="174.0"/>
+      </extensionElements>
+    </sequenceFlow>
+    <sequenceFlow id="_5" name="Abandon session" sourceRef="secondTopicPathTwo" targetRef="collectResponses">
+      <extensionElements>
+        <yaoqiang:label offset-x="0.0" offset-y="188.0" x="-1.0" y="64.0"/>
+      </extensionElements>
+    </sequenceFlow>
+    <sequenceFlow id="_6" name="Abandon session" sourceRef="SecondTopicPathOne" targetRef="collectResponses">
+      <extensionElements>
+        <yaoqiang:label offset-x="0.0" offset-y="-45.0" x="-1.0" y="53.0"/>
+      </extensionElements>
+    </sequenceFlow>
+    <endEvent id="endevent1" name="End">
+      <incoming>flow5</incoming>
+    </endEvent>
+  </process>
+  <bpmndi:BPMNDiagram id="Yaoqiang_Diagram-_1" name="Untitled Diagram" resolution="96.0">
+    <bpmndi:BPMNPlane bpmnElement="FillQuestionnaireSubProcess">
+      <bpmndi:BPMNShape bpmnElement="FirstTopic" id="Yaoqiang-FirstTopic">
+        <omgdc:Bounds height="56.0" width="124.0" x="94.0" y="209.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="18.8046875" width="109.0" x="101.5" y="229.59765625"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="secondTopicPathTwo" id="Yaoqiang-secondTopicPathTwo">
+        <omgdc:Bounds height="72.0" width="105.0" x="401.0" y="270.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="32.8046875" width="82.0" x="412.5" y="291.59765625"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="SecondTopicPathOne" id="Yaoqiang-SecondTopicPathOne">
+        <omgdc:Bounds height="66.0" width="105.0" x="322.0" y="67.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="32.8046875" width="82.0" x="333.5" y="85.59765625"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="collectResponses" id="Yaoqiang-collectResponses">
+        <omgdc:Bounds height="55.0" width="159.0" x="732.0" y="228.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="18.8046875" width="109.0" x="757.0" y="248.09765625"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="scripttask1" id="Yaoqiang-scripttask1">
+        <omgdc:Bounds height="55.0" width="154.0" x="170.0" y="391.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="18.8046875" width="136.0" x="179.0" y="411.09765625"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="scripttask2" id="Yaoqiang-scripttask2">
+        <omgdc:Bounds height="56.0" width="131.0" x="518.0" y="381.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="32.8046875" width="81.0" x="543.0" y="394.59765625"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="scripttask3" id="Yaoqiang-scripttask3">
+        <omgdc:Bounds height="55.0" width="115.0" x="610.0" y="56.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="32.8046875" width="81.0" x="627.0" y="69.09765625"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="F3_10" id="Yaoqiang-F3_10" isMarkerVisible="true">
+        <omgdc:Bounds height="42.0" width="42.0" x="510.0" y="140.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="18.8046875" width="6.0" x="528.0" y="184.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="F2_10" id="Yaoqiang-F2_10" isMarkerVisible="true">
+        <omgdc:Bounds height="42.0" width="42.0" x="734.0" y="425.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="18.8046875" width="6.0" x="752.0" y="469.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="firstGateway" id="Yaoqiang-firstGateway" isMarkerVisible="true">
+        <omgdc:Bounds height="42.0" width="42.0" x="267.0" y="232.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="18.8046875" width="6.0" x="285.0" y="276.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="startevent1" id="Yaoqiang-startevent1">
+        <omgdc:Bounds height="32.0" width="32.0" x="14.0" y="238.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="18.8046875" width="34.0" x="13.0" y="278.79296875"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endevent1" id="Yaoqiang-endevent1">
+        <omgdc:Bounds height="32.0" width="32.0" x="928.0" y="219.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="18.8046875" width="27.0" x="930.5" y="259.79296875"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="_6" id="Yaoqiang-_6">
+        <omgdi:waypoint x="374.5" y="67.0"/>
+        <omgdi:waypoint x="802.8333333333333" y="11.0"/>
+        <omgdi:waypoint x="802.8333333333333" y="228.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="18.8046875" width="104.0" x="269.5" y="12.59765625"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_5" id="Yaoqiang-_5">
+        <omgdi:waypoint x="453.5" y="342.0"/>
+        <omgdi:waypoint x="841.5" y="540.0"/>
+        <omgdi:waypoint x="841.5" y="283.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="18.8046875" width="104.0" x="465.5" y="520.59765625"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_4" id="Yaoqiang-_4">
+        <omgdi:waypoint x="156.0" y="265.0"/>
+        <omgdi:waypoint x="873.5" y="564.0"/>
+        <omgdi:waypoint x="873.5" y="283.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="18.8046875" width="104.0" x="278.0" y="541.59765625"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="cond3B" id="Yaoqiang-cond3B">
+        <omgdi:waypoint x="532.0" y="181.16666666666663"/>
+        <omgdi:waypoint x="532.0" y="221.0"/>
+        <omgdi:waypoint x="670.0" y="324.0"/>
+        <omgdi:waypoint x="732.1666666666666" y="255.5"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="18.8046875" width="48.0" x="594.9166666666666" y="235.09765625"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_3" id="Yaoqiang-_3">
+        <omgdi:waypoint x="377.0" y="133.0"/>
+        <omgdi:waypoint x="377.0" y="161.0"/>
+        <omgdi:waypoint x="510.16666666666663" y="161.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="18.8046875" width="6.0" x="426.5833333333333" y="151.59765625"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_2" id="Yaoqiang-_2">
+        <omgdi:waypoint x="506.16666666666663" y="306.0"/>
+        <omgdi:waypoint x="669.5" y="442.6666666666667"/>
+        <omgdi:waypoint x="737.4999999999999" y="442.6666666666667"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="18.8046875" width="6.0" x="666.5" y="317.26432291666663"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="cond1C" id="Yaoqiang-cond1C">
+        <omgdi:waypoint x="776.1666666666666" y="446.0"/>
+        <omgdi:waypoint x="808.1666666666666" y="405.3333333333333"/>
+        <omgdi:waypoint x="808.1666666666666" y="283.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="18.8046875" width="48.0" x="784.1666666666666" y="371.09765625"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="cond1A" id="Yaoqiang-cond1A">
+        <omgdi:waypoint x="288.16666666666663" y="232.0"/>
+        <omgdi:waypoint x="288.16666666666663" y="144.0"/>
+        <omgdi:waypoint x="322.16666666666663" y="100.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="18.8046875" width="48.0" x="241.16666666666663" y="148.59765625"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="F1_11" id="Yaoqiang-F1_11">
+        <omgdi:waypoint x="218.16666666666663" y="237.0"/>
+        <omgdi:waypoint x="267.16666666666663" y="253.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="18.8046875" width="6.0" x="239.5" y="235.76432291666663"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow5" id="Yaoqiang-flow5">
+        <omgdi:waypoint x="891.1666666666666" y="255.5"/>
+        <omgdi:waypoint x="928.1666666666666" y="235.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="18.8046875" width="6.0" x="906.5" y="235.68098958333337"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow4" id="Yaoqiang-flow4">
+        <omgdi:waypoint x="667.5" y="56.0"/>
+        <omgdi:waypoint x="410.8333333333333" y="28.0"/>
+        <omgdi:waypoint x="943.0" y="37.0"/>
+        <omgdi:waypoint x="437.0" y="39.0"/>
+        <omgdi:waypoint x="410.8333333333333" y="67.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="18.8046875" width="6.0" x="530.6666666666666" y="18.59765625"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow3" id="Yaoqiang-flow3">
+        <omgdi:waypoint x="518.1666666666666" y="423.0"/>
+        <omgdi:waypoint x="477.16666666666663" y="423.0"/>
+        <omgdi:waypoint x="783.0" y="509.0"/>
+        <omgdi:waypoint x="783.0" y="475.0"/>
+        <omgdi:waypoint x="495.0" y="475.0"/>
+        <omgdi:waypoint x="495.0" y="370.0"/>
+        <omgdi:waypoint x="477.16666666666663" y="342.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="18.8046875" width="6.0" x="474.16666666666663" y="393.59765625"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="cond2C" id="Yaoqiang-cond2C">
+        <omgdi:waypoint x="754.8333333333333" y="425.33333333333337"/>
+        <omgdi:waypoint x="754.8333333333333" y="390.6666666666667"/>
+        <omgdi:waypoint x="1021.0" y="578.0"/>
+        <omgdi:waypoint x="1021.0" y="449.0"/>
+        <omgdi:waypoint x="1021.0" y="391.0"/>
+        <omgdi:waypoint x="1021.0" y="331.0"/>
+        <omgdi:waypoint x="1003.0" y="331.0"/>
+        <omgdi:waypoint x="754.8333333333333" y="283.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="18.8046875" width="95.0" x="684.3333333333333" y="345.7643229166667"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow2" id="Yaoqiang-flow2">
+        <omgdi:waypoint x="180.16666666666663" y="391.0"/>
+        <omgdi:waypoint x="180.16666666666663" y="364.0"/>
+        <omgdi:waypoint x="104.0" y="444.0"/>
+        <omgdi:waypoint x="180.16666666666663" y="265.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="18.8046875" width="6.0" x="177.16666666666663" y="318.59765625"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="cond2B" id="Yaoqiang-cond2B">
+        <omgdi:waypoint x="552.1666666666666" y="161.0"/>
+        <omgdi:waypoint x="785.0" y="161.0"/>
+        <omgdi:waypoint x="748.0" y="294.0"/>
+        <omgdi:waypoint x="971.0" y="294.0"/>
+        <omgdi:waypoint x="785.0" y="228.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="18.8046875" width="95.0" x="641.5833333333334" y="144.59765625"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="wrongResponseC" id="Yaoqiang-wrongResponseC">
+        <omgdi:waypoint x="754.8333333333333" y="466.66666666666663"/>
+        <omgdi:waypoint x="754.8333333333333" y="497.3333333333333"/>
+        <omgdi:waypoint x="583.5" y="437.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="18.8046875" width="101.0" x="598.8333333333334" y="504.93098958333326"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow1" id="Yaoqiang-flow1">
+        <omgdi:waypoint x="46.16666666666663" y="254.0"/>
+        <omgdi:waypoint x="94.16666666666663" y="237.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="18.8046875" width="6.0" x="67.0" y="235.93098958333337"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="wrongResponseB" id="Yaoqiang-wrongResponseB">
+        <omgdi:waypoint x="529.5" y="141.66666666666663"/>
+        <omgdi:waypoint x="529.5" y="89.33333333333333"/>
+        <omgdi:waypoint x="896.0" y="90.0"/>
+        <omgdi:waypoint x="610.1666666666666" y="89.33333333333333"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="18.8046875" width="99.0" x="498.16666666666663" y="71.93098958333333"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="cond2A" id="Yaoqiang-cond2A">
+        <omgdi:waypoint x="309.16666666666663" y="253.0"/>
+        <omgdi:waypoint x="401.16666666666663" y="306.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="18.8046875" width="95.0" x="318.5" y="238.26432291666663"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="wrongResponseA" id="Yaoqiang-wrongResponseA">
+        <omgdi:waypoint x="286.8333333333333" y="272.6666666666667"/>
+        <omgdi:waypoint x="286.8333333333333" y="373.3333333333333"/>
+        <omgdi:waypoint x="286.8333333333333" y="391.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="18.8046875" width="101.0" x="247.33333333333331" y="335.43098958333337"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>
