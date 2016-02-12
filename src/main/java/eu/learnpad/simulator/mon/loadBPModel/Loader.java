@@ -30,7 +30,6 @@ public class Loader {
     @GET
     @Produces(MediaType.TEXT_PLAIN)
     public String getIt() {
-    	java.util.Date now = new java.util.Date();
     	new MyGlimpseConsumer(
 				Manager.createConsumerSettingsPropertiesObject(
 						"org.apache.activemq.jndi.ActiveMQInitialContextFactory", 
@@ -42,7 +41,7 @@ public class Loader {
 						false, "RestAPI"),
 				readFile("/home/acalabro/workspace/loadBPModel/src/main/java/eu/learnpad/simulator/mon/example/bpmnToSendToTheMonitor.bpmn"),
 				"1-2-3-4-5-6",
-				"sessionID"+now.toString());	
+				"sessionID"+System.currentTimeMillis());	
     	
         return "Simulated BPMN and Learners ID sent";
     }
