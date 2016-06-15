@@ -24,6 +24,7 @@ import it.cnr.isti.labse.glimpse.xml.complexEventException.ComplexEventException
 import it.cnr.isti.labse.glimpse.xml.complexEventResponse.ComplexEventResponse;
 import it.cnr.isti.labse.glimpse.xml.complexEventRule.ComplexEventRuleActionListDocument;
 
+import java.util.List;
 import java.util.Properties;
 
 import javax.jms.JMSException;
@@ -67,6 +68,11 @@ public class MyGlimpseConsumer extends GlimpseAbstractConsumer {
 	public MyGlimpseConsumer(Properties settings,
 			String plainTextRule, String usersInvolvedID, String sessionID) {
 		super(settings, plainTextRule, usersInvolvedID, sessionID);
+	}
+	
+	public MyGlimpseConsumer(Properties settings,
+			String plainTextRule, List<String> usersInvolvedID, String sessionID, String bpmnID) {
+		super(settings, plainTextRule, usersInvolvedID, sessionID, bpmnID);
 	}
 
 	

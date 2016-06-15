@@ -1,29 +1,9 @@
- /*
-  * GLIMPSE: A generic and flexible monitoring infrastructure.
-  * For further information: http://labsewiki.isti.cnr.it/labse/tools/glimpse/public/main
-  * 
-  * Copyright (C) 2011  Software Engineering Laboratory - ISTI CNR - Pisa - Italy
-  * 
-  * This program is free software: you can redistribute it and/or modify
-  * it under the terms of the GNU General Public License as published by
-  * the Free Software Foundation, either version 3 of the License, or
-  * (at your option) any later version.
-  * 
-  * This program is distributed in the hope that it will be useful,
-  * but WITHOUT ANY WARRANTY; without even the implied warranty of
-  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  * GNU General Public License for more details.
-  * 
-  * You should have received a copy of the GNU General Public License
-  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-  * 
-*/
-
 package eu.learnpad.simulator.mon.consumer;
 
 import it.cnr.isti.labse.glimpse.xml.complexEventRule.ComplexEventRuleActionListDocument;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Properties;
 
 import javax.jms.JMSException;
@@ -127,6 +107,17 @@ public abstract class GlimpseAbstractConsumer implements GlimpseConsumer {
 		}
 	}
 	
+	public GlimpseAbstractConsumer(Properties settings, String plainTextRule, String usersInvolvedID, String sessionID, String bpmnID) {
+		init(settings);
+		try {
+			this.sendTextMessageWithLearnersList(connection, initContext, "serviceTopic", plainTextRule, usersInvolvedID, sessionID, bpmnID, true);
+		} catch (JMSException e) {
+			e.printStackTrace();
+		} catch (NamingException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	/**
 	 * 
 	 * This constructor allow to create a {@link GlimpseAbstractConsumer} object<br />
@@ -149,6 +140,61 @@ public abstract class GlimpseAbstractConsumer implements GlimpseConsumer {
 		}
 	}
 	
+	public GlimpseAbstractConsumer(Properties settings, String messagePayload, List<String> learnersInvolved,
+			String sessionID, String bpmnID) {
+		try {
+			init(settings);
+			this.sendTextMessageWithLearnersListAsArray(connection, initContext, "serviceTopic", messagePayload, learnersInvolved, sessionID, bpmnID, true);
+		} catch (NamingException e) {
+			e.printStackTrace();
+		} catch (JMSException e) {
+			e.printStackTrace();
+		}
+	}
+
+
+	private void sendTextMessageWithLearnersListAsArray(TopicConnection connection, InitialContext initContext,
+			String serviceTopic, String messagePayload, List<String> learnersInvolved, String sessionID, String bpmnID,
+			boolean debug) throws NamingException, JMSException {
+		
+		if (debug) {
+			DebugMessages.print(this.getClass().getSimpleName(), "Creating Session ");
+		}
+		TopicSession publishSession = connection.createTopicSession(false, Session.AUTO_ACKNOWLEDGE);
+		if (debug) {
+			DebugMessages.ok();
+			DebugMessages.print(this.getClass().getSimpleName(), "Looking up for channel ");
+		}
+		Topic connectionTopic = (Topic) initContext.lookup(serviceTopic);
+		if (debug) {
+			DebugMessages.ok();
+			DebugMessages.print(this.getClass().getSimpleName(), "Creating Publisher ");
+		}
+		TopicPublisher tPub = publishSession.createPublisher(connectionTopic);
+		if (debug) {
+			DebugMessages.ok();
+			DebugMessages.print(this.getClass().getSimpleName(), "Creating Message ");
+		}
+		TextMessage sendMessage = publishSession.createTextMessage();
+		sendMessage.setObjectProperty("USERSINVOLVEDID", learnersInvolved);
+		sendMessage.setStringProperty("SESSIONID", sessionID);
+		sendMessage.setStringProperty("BPMNID", bpmnID);
+		sendMessage.setStringProperty("SENDER", settings.getProperty("consumerName"));
+		sendMessage.setStringProperty("DESTINATION", "monitor");
+		sendMessage.setText(messagePayload);
+		if (debug) {
+			DebugMessages.ok();
+			DebugMessages.print(this.getClass().getSimpleName(), "Publishing message  ");
+		}
+		tPub.publish(sendMessage);
+		if (debug) {
+			DebugMessages.ok();
+			DebugMessages.line();
+		}
+		
+	}
+
+
 	/* (non-Javadoc)
 	 * @see javax.jms.MessageListener#onMessage(javax.jms.Message)
 	 */
@@ -380,7 +426,46 @@ public abstract class GlimpseAbstractConsumer implements GlimpseConsumer {
 			DebugMessages.ok();
 			DebugMessages.line();
 		}
-}
+	}
+
+		
+		public void sendTextMessageWithLearnersList(TopicConnection connection, InitialContext initContext,
+				String serviceChannel, String textToSend, String usersInvolvedID, String sessionID, String bpmnID, boolean debug)	throws JMSException, NamingException {
+			if (debug) {
+				DebugMessages.print(this.getClass().getSimpleName(), "Creating Session ");
+			}
+			TopicSession publishSession = connection.createTopicSession(false, Session.AUTO_ACKNOWLEDGE);
+			if (debug) {
+				DebugMessages.ok();
+				DebugMessages.print(this.getClass().getSimpleName(), "Looking up for channel ");
+			}
+			Topic connectionTopic = (Topic) initContext.lookup(serviceChannel);
+			if (debug) {
+				DebugMessages.ok();
+				DebugMessages.print(this.getClass().getSimpleName(), "Creating Publisher ");
+			}
+			TopicPublisher tPub = publishSession.createPublisher(connectionTopic);
+			if (debug) {
+				DebugMessages.ok();
+				DebugMessages.print(this.getClass().getSimpleName(), "Creating Message ");
+			}
+			TextMessage sendMessage = publishSession.createTextMessage();
+			sendMessage.setStringProperty("USERSINVOLVEDID", usersInvolvedID);
+			sendMessage.setStringProperty("SESSIONID", sessionID);
+			sendMessage.setStringProperty("BPMNID", bpmnID);
+			sendMessage.setStringProperty("SENDER", settings.getProperty("consumerName"));
+			sendMessage.setStringProperty("DESTINATION", "monitor");
+			sendMessage.setText(textToSend);
+			if (debug) {
+				DebugMessages.ok();
+				DebugMessages.print(this.getClass().getSimpleName(), "Publishing message  ");
+			}
+			tPub.publish(sendMessage);
+			if (debug) {
+				DebugMessages.ok();
+				DebugMessages.line();
+			}
+		}
 	
 	public void sendActionListMessageWithLearnerList(TopicConnection connection, InitialContext initContext, String serviceChannel, ComplexEventRuleActionListDocument actionList,
 													String usersInvolvedID, boolean debug) throws JMSException, NamingException {
@@ -465,7 +550,7 @@ public abstract class GlimpseAbstractConsumer implements GlimpseConsumer {
 	 * @throws JMSException
 	 */
 	protected ComplexEventRuleActionListDocument createComplexEventRuleActionDocumentFromXMLString(
-			String xmlRule, boolean debug) throws XmlException, JMSException {
+			String xmlRule, boolean debug) throws JMSException, XmlException {
 		if (debug)
 			DebugMessages.print(this.getClass().getSimpleName(),
 					"Creating ComplexEventRuleActionListDocument with provided XML ");

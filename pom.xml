@@ -5,10 +5,8 @@
 
     <groupId>eu.learnpad.simulator.mon</groupId>
     <artifactId>loadBPModel</artifactId>
-    <packaging>war</packaging>
     <version>0.0.1-SNAPSHOT</version>
     <name>loadBPModel</name>
-
     <build>
         <finalName>loadBPModel</finalName>
         <plugins>
@@ -25,26 +23,8 @@
         </plugins>
     </build>
 
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.glassfish.jersey</groupId>
-                <artifactId>jersey-bom</artifactId>
-                <version>${jersey.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
-
-    <dependencies>
+       <dependencies>
         <dependency>
-            <groupId>org.glassfish.jersey.containers</groupId>
-            <artifactId>jersey-container-servlet-core</artifactId>
-            <!-- use the following artifactId if you don't need servlet 2.x compatibility -->
-            <!-- artifactId>jersey-container-servlet</artifactId -->
-        </dependency>
-         <dependency>
 			<groupId>org.apache.activemq</groupId>
 			<artifactId>activemq-all</artifactId>
 			<version>5.7.0</version>
@@ -69,34 +49,11 @@
 	  	<artifactId>ComplexEventRule</artifactId>
 	  	<version>0.0.1-SNAPSHOT</version>
 	  </dependency>
-        <!-- uncomment this to get JSON support
+        
         <dependency>
-            <groupId>org.glassfish.jersey.media</groupId>
-            <artifactId>jersey-media-moxy</artifactId>
-        </dependency>
-        -->
-        <dependency>
-        	<groupId>org.glassfish.jersey.media</groupId>
-        	<artifactId>jersey-media-multipart</artifactId>
-        </dependency>
-        <dependency>
-        	<groupId>org.json</groupId>
-        	<artifactId>json</artifactId>
-        	<version>20151123</version>
-        </dependency>
-        <dependency>
-        	<groupId>com.sun.jersey</groupId>
-        	<artifactId>jersey-client</artifactId>
-        	<version>1.19</version>
-        </dependency>
-        <dependency>
-        	<groupId>com.sun.jersey</groupId>
-        	<artifactId>jersey-json</artifactId>
-        	<version>1.19</version>
+        	<groupId>org.apache.xmlbeans</groupId>
+        	<artifactId>xmlbeans</artifactId>
+        	<version>2.6.0</version>
         </dependency>
     </dependencies>
-    <properties>
-        <jersey.version>2.22.1</jersey.version>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
 </project>
