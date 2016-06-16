@@ -5,7 +5,6 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 import eu.learnpad.simulator.mon.utils.Manager;
 
@@ -13,14 +12,6 @@ public class TestClass {
 
 	public static void main (String[] args)  {
 	
-		List<String> learnersInvolved = new ArrayList<>();
-		learnersInvolved.add("1");
-		learnersInvolved.add("2");
-		learnersInvolved.add("3");
-		learnersInvolved.add("4");
-		learnersInvolved.add("5");
-		learnersInvolved.add("6");
-		
 	new MyGlimpseConsumer(
 			Manager.createConsumerSettingsPropertiesObject(
 					"org.apache.activemq.jndi.ActiveMQInitialContextFactory", 
@@ -32,7 +23,9 @@ public class TestClass {
 					false,
 					"SimulationComponent"), //sender name
 			readFile("bpmnToSendToTheMonitor.bpmn"), //the bpmn file to send as payload
-			learnersInvolved, //IDs of the learners involved within the process
+			new ArrayList()
+			{private static final long serialVersionUID = 1L;{add("1");add("2");add("3");add("4");add("5");add("6");}},
+			//IDs of the learners involved within the process
 			"sessionID"+System.currentTimeMillis(), //learning session id
 			"a23748293649" //the ID of the bpmn
 			);	
