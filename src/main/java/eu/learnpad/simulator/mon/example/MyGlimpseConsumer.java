@@ -24,13 +24,16 @@ import it.cnr.isti.labse.glimpse.xml.complexEventException.ComplexEventException
 import it.cnr.isti.labse.glimpse.xml.complexEventResponse.ComplexEventResponse;
 import it.cnr.isti.labse.glimpse.xml.complexEventRule.ComplexEventRuleActionListDocument;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.ObjectMessage;
 
+import eu.learnpad.sim.rest.event.ScoreType;
 import eu.learnpad.simulator.mon.consumer.GlimpseAbstractConsumer;
 import eu.learnpad.simulator.mon.utils.Manager;
 
@@ -55,20 +58,6 @@ public class MyGlimpseConsumer extends GlimpseAbstractConsumer {
 	 * For a rule example see the exampleRule.xml file. 
 	 * 
 	 */
-	public MyGlimpseConsumer(Properties settings,
-			String plainTextRule) {
-		super(settings, plainTextRule);
-	}
-	
-	public MyGlimpseConsumer(Properties settings,
-			String plainTextRule, String usersInvolvedID) {
-		super(settings, plainTextRule, usersInvolvedID);
-	}
-
-	public MyGlimpseConsumer(Properties settings,
-			String plainTextRule, String usersInvolvedID, String sessionID) {
-		super(settings, plainTextRule, usersInvolvedID, sessionID);
-	}
 	
 	public MyGlimpseConsumer(Properties settings,
 			String plainTextRule, List<String> usersInvolvedID, String sessionID, String bpmnID) {
@@ -85,8 +74,22 @@ public class MyGlimpseConsumer extends GlimpseAbstractConsumer {
 				System.out.println("Exception ClassName: " + exceptionReceived.getClassName() + "\n");
 			}
 			else {
+				if (responseFromMonitoring.getObject() instanceof Map) {
+					HashMap<ScoreType, Float> theScores = new HashMap<>();
+					System.out.println(theScores.get(ScoreType.ABSOLUTE_BP_SCORE));
+					System.out.println(theScores.get(ScoreType.ABSOLUTE_GLOBAL_SCORE));
+					System.out.println(theScores.get(ScoreType.ABSOLUTE_SESSION_SCORE));
+					System.out.println(theScores.get(ScoreType.BP_COVERAGE));
+					System.out.println(theScores.get(ScoreType.BP_SCORE));
+					System.out.println(theScores.get(ScoreType.GLOBAL_SCORE));
+					System.out.println(theScores.get(ScoreType.RELATIVE_BP_SCORE));
+					System.out.println(theScores.get(ScoreType.RELATIVE_GLOBAL_SCORE));
+					System.out.println(theScores.get(ScoreType.SESSION_SCORE));
+				}
+				else {
 				ComplexEventResponse resp = (ComplexEventResponse) responseFromMonitoring.getObject();
 					System.out.println("Response value: " + resp.getResponseValue());
+				}
 			}
 		}
 		catch(ClassCastException asd) {

@@ -2,14 +2,11 @@ package eu.learnpad.simulator.mon.consumer;
 
 import javax.jms.JMSException;
 import javax.jms.MessageListener;
-import javax.jms.TextMessage;
 import javax.jms.TopicConnection;
-import javax.jms.TopicSession;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 import eu.learnpad.simulator.mon.example.MyGlimpseConsumer;
-import eu.learnpad.simulator.mon.utils.Status;
 import it.cnr.isti.labse.glimpse.xml.complexEventRule.ComplexEventRuleActionListDocument;
 
 
@@ -48,15 +45,6 @@ import it.cnr.isti.labse.glimpse.xml.complexEventRule.ComplexEventRuleActionList
  */
 public interface GlimpseConsumer extends MessageListener{
 
-	/**
-	 * @param publishSession the TopicSession where to send the message
-	 * @param debug debug value
-	 * @return a TextMessage that can be sent to the monitoring infrastructure<br />
-	 * to obtain the Status of the monitoring enabler<br />
-	 * that is defined using the enum {@link Status}
-	 */
-	TextMessage getMonitorStatusMessage(TopicSession publishSession, boolean debug);
-	
 	/**
 	 * Send a ActionList of rules to the monitoring infrastructure requesting an evaluation.<br />
 	 * If the request is accepted, the monitoring will answer with a responseChannel where to connect<br />
