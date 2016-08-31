@@ -24,7 +24,7 @@ public class TestClass {
 					"SimulationComponent"), //sender name
 			readFile("bpmnToSendToTheMonitor.bpmn"), //the bpmn file to send as payload
 			new ArrayList()
-			{private static final long serialVersionUID = 1L;{add("1");add("2");add("3");add("4");add("5");add("6");}},
+			{private static final long serialVersionUID = 1L;{add("3");add("7");add("8");add("11");add("35");add("84");}},
 			//IDs of the learners involved within the process
 			"sessionID"+System.currentTimeMillis(), //learning session id
 			"a23748293649" //the ID of the bpmn

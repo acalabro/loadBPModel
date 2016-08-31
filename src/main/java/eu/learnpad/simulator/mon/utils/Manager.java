@@ -7,6 +7,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
 
+import org.apache.commons.net.ntp.TimeStamp;
+
 import eu.learnpad.simulator.mon.consumer.GlimpseAbstractConsumer;
 
 /**
@@ -127,7 +129,7 @@ public class Manager
 				String javaNamingSecurityCredential, String connectionFactoryNames,
 				String topicServiceTopic, boolean debug, String consumerName) {
 			if (debug)
-				DebugMessages.print(GlimpseAbstractConsumer.class.getSimpleName(),
+				DebugMessages.print(TimeStamp.getCurrentTime(), GlimpseAbstractConsumer.class.getSimpleName(),
 				"Creating Properties object ");
 			Properties settings = new Properties();
 			settings.setProperty("java.naming.factory.initial",javaNamingFactoryInitial);
