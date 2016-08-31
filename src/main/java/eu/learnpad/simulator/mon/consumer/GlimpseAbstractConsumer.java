@@ -20,6 +20,7 @@ import javax.jms.TopicSubscriber;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
+import org.apache.commons.net.ntp.TimeStamp;
 import org.apache.xmlbeans.XmlException;
 
 import eu.learnpad.simulator.mon.exceptions.IncorrectRuleFormatException;
@@ -126,22 +127,22 @@ public abstract class GlimpseAbstractConsumer implements GlimpseConsumer {
 			boolean debug) throws NamingException, JMSException {
 		
 		if (debug) {
-			DebugMessages.print(this.getClass().getSimpleName(), "Creating Session ");
+			DebugMessages.print(TimeStamp.getCurrentTime(), this.getClass().getSimpleName(), "Creating Session ");
 		}
 		TopicSession publishSession = connection.createTopicSession(false, Session.AUTO_ACKNOWLEDGE);
 		if (debug) {
 			DebugMessages.ok();
-			DebugMessages.print(this.getClass().getSimpleName(), "Looking up for channel ");
+			DebugMessages.print(TimeStamp.getCurrentTime(), this.getClass().getSimpleName(), "Looking up for channel ");
 		}
 		Topic connectionTopic = (Topic) initContext.lookup(serviceTopic);
 		if (debug) {
 			DebugMessages.ok();
-			DebugMessages.print(this.getClass().getSimpleName(), "Creating Publisher ");
+			DebugMessages.print(TimeStamp.getCurrentTime(), this.getClass().getSimpleName(), "Creating Publisher ");
 		}
 		TopicPublisher tPub = publishSession.createPublisher(connectionTopic);
 		if (debug) {
 			DebugMessages.ok();
-			DebugMessages.print(this.getClass().getSimpleName(), "Creating Message ");
+			DebugMessages.print(TimeStamp.getCurrentTime(), this.getClass().getSimpleName(), "Creating Message ");
 		}
 		TextMessage sendMessage = publishSession.createTextMessage();
 		sendMessage.setObjectProperty("USERSINVOLVEDID", learnersInvolved);
@@ -152,7 +153,7 @@ public abstract class GlimpseAbstractConsumer implements GlimpseConsumer {
 		sendMessage.setText(messagePayload);
 		if (debug) {
 			DebugMessages.ok();
-			DebugMessages.print(this.getClass().getSimpleName(), "Publishing message  ");
+			DebugMessages.print(TimeStamp.getCurrentTime(), this.getClass().getSimpleName(), "Publishing message  ");
 		}
 		tPub.publish(sendMessage);
 		if (debug) {
@@ -207,7 +208,7 @@ public abstract class GlimpseAbstractConsumer implements GlimpseConsumer {
 	 */
 	protected InitialContext initConnection(Properties settings, boolean debug) throws NamingException {
 		if (debug)
-		DebugMessages.print(this.getClass().getSimpleName(),
+		DebugMessages.print(TimeStamp.getCurrentTime(), this.getClass().getSimpleName(),
 				"Creating InitialContext with settings ");
 		InitialContext initConn = new InitialContext(settings);
 		if (debug) {
@@ -231,12 +232,12 @@ public abstract class GlimpseAbstractConsumer implements GlimpseConsumer {
 	protected TopicConnection createConnection(InitialContext initConn, Properties settings, boolean debug) throws NamingException, JMSException
 	{
 		if (debug)
-			DebugMessages.print(this.getClass().getSimpleName(),
+			DebugMessages.print(TimeStamp.getCurrentTime(), this.getClass().getSimpleName(),
 					"Creating ConnectionFactory with settings ");
 		TopicConnectionFactory connFact = (TopicConnectionFactory)initConn.lookup(settings.getProperty("connectionFactoryNames"));
 		if (debug) {
 			DebugMessages.ok();  
-			DebugMessages.print(this.getClass().getSimpleName(),
+			DebugMessages.print(TimeStamp.getCurrentTime(), this.getClass().getSimpleName(),
 						"Creating TopicConnection "); }
 			TopicConnection connection = connFact.createTopicConnection();
 			if (debug) {
@@ -251,22 +252,22 @@ public abstract class GlimpseAbstractConsumer implements GlimpseConsumer {
 	@Override
 	public void sendActionListMessage(TopicConnection connection, InitialContext initContext, String serviceChannel, ComplexEventRuleActionListDocument actionList, boolean debug) throws JMSException, NamingException {
 		if (debug) {
-			DebugMessages.print(this.getClass().getSimpleName(),
+			DebugMessages.print(TimeStamp.getCurrentTime(), this.getClass().getSimpleName(),
 					"Creating Session "); }
 		TopicSession publishSession = connection.createTopicSession(false,Session.AUTO_ACKNOWLEDGE);
 		if (debug) {
 			DebugMessages.ok();
-			DebugMessages.print(this.getClass().getSimpleName(),
+			DebugMessages.print(TimeStamp.getCurrentTime(), this.getClass().getSimpleName(),
 					"Looking up for channel ");}
 		Topic connectionTopic = (Topic) initContext.lookup(serviceChannel);
 		if (debug) {
 			DebugMessages.ok();
-			DebugMessages.print(this.getClass().getSimpleName(),
+			DebugMessages.print(TimeStamp.getCurrentTime(), this.getClass().getSimpleName(),
 					"Creating Publisher "); }
 		TopicPublisher tPub = publishSession.createPublisher(connectionTopic);
 		if (debug) {
 			DebugMessages.ok();
-			DebugMessages.print(this.getClass().getSimpleName(),
+			DebugMessages.print(TimeStamp.getCurrentTime(), this.getClass().getSimpleName(),
 					"Creating Message "); }
 		ObjectMessage sendMessage = publishSession.createObjectMessage();
 		sendMessage.setStringProperty("SENDER", settings.getProperty("consumerName"));
@@ -274,7 +275,7 @@ public abstract class GlimpseAbstractConsumer implements GlimpseConsumer {
 		sendMessage.setObject((Serializable)actionList);
 		if (debug) {
 			DebugMessages.ok();
-			DebugMessages.print(this.getClass().getSimpleName(),
+			DebugMessages.print(TimeStamp.getCurrentTime(), this.getClass().getSimpleName(),
 					"Publishing message  "); }
 		tPub.publish(sendMessage);	
 		if (debug) {
@@ -286,22 +287,22 @@ public abstract class GlimpseAbstractConsumer implements GlimpseConsumer {
 	public void sendTextMessage(TopicConnection connection, InitialContext initContext, String serviceChannel, String textToSend, boolean debug)
 			throws JMSException, NamingException {
 		if (debug) {
-			DebugMessages.print(this.getClass().getSimpleName(),
+			DebugMessages.print(TimeStamp.getCurrentTime(), this.getClass().getSimpleName(),
 					"Creating Session "); }
 		TopicSession publishSession = connection.createTopicSession(false,Session.AUTO_ACKNOWLEDGE);
 		if (debug) {
 			DebugMessages.ok();
-			DebugMessages.print(this.getClass().getSimpleName(),
+			DebugMessages.print(TimeStamp.getCurrentTime(), this.getClass().getSimpleName(),
 					"Looking up for channel ");}
 		Topic connectionTopic = (Topic) initContext.lookup(serviceChannel);
 		if (debug) {
 			DebugMessages.ok();
-			DebugMessages.print(this.getClass().getSimpleName(),
+			DebugMessages.print(TimeStamp.getCurrentTime(), this.getClass().getSimpleName(),
 					"Creating Publisher "); }
 		TopicPublisher tPub = publishSession.createPublisher(connectionTopic);
 		if (debug) {
 			DebugMessages.ok();
-			DebugMessages.print(this.getClass().getSimpleName(),
+			DebugMessages.print(TimeStamp.getCurrentTime(), this.getClass().getSimpleName(),
 					"Creating Message "); }
 		TextMessage sendMessage = publishSession.createTextMessage();
 		sendMessage.setStringProperty("SENDER", settings.getProperty("consumerName"));
@@ -309,7 +310,7 @@ public abstract class GlimpseAbstractConsumer implements GlimpseConsumer {
 		sendMessage.setText(textToSend);
 		if (debug) {
 			DebugMessages.ok();
-			DebugMessages.print(this.getClass().getSimpleName(),
+			DebugMessages.print(TimeStamp.getCurrentTime(), this.getClass().getSimpleName(),
 					"Publishing message  "); }
 		tPub.publish(sendMessage);		
 		if (debug) {
@@ -322,22 +323,22 @@ public abstract class GlimpseAbstractConsumer implements GlimpseConsumer {
 		public void sendTextMessageWithLearnersList(TopicConnection connection, InitialContext initContext,
 				String serviceChannel, String textToSend, String usersInvolvedID, String sessionID, String bpmnID, boolean debug)	throws JMSException, NamingException {
 			if (debug) {
-				DebugMessages.print(this.getClass().getSimpleName(), "Creating Session ");
+				DebugMessages.print(TimeStamp.getCurrentTime(), this.getClass().getSimpleName(), "Creating Session ");
 			}
 			TopicSession publishSession = connection.createTopicSession(false, Session.AUTO_ACKNOWLEDGE);
 			if (debug) {
 				DebugMessages.ok();
-				DebugMessages.print(this.getClass().getSimpleName(), "Looking up for channel ");
+				DebugMessages.print(TimeStamp.getCurrentTime(), this.getClass().getSimpleName(), "Looking up for channel ");
 			}
 			Topic connectionTopic = (Topic) initContext.lookup(serviceChannel);
 			if (debug) {
 				DebugMessages.ok();
-				DebugMessages.print(this.getClass().getSimpleName(), "Creating Publisher ");
+				DebugMessages.print(TimeStamp.getCurrentTime(), this.getClass().getSimpleName(), "Creating Publisher ");
 			}
 			TopicPublisher tPub = publishSession.createPublisher(connectionTopic);
 			if (debug) {
 				DebugMessages.ok();
-				DebugMessages.print(this.getClass().getSimpleName(), "Creating Message ");
+				DebugMessages.print(TimeStamp.getCurrentTime(), this.getClass().getSimpleName(), "Creating Message ");
 			}
 			TextMessage sendMessage = publishSession.createTextMessage();
 			sendMessage.setStringProperty("USERSINVOLVEDID", usersInvolvedID);
@@ -348,7 +349,7 @@ public abstract class GlimpseAbstractConsumer implements GlimpseConsumer {
 			sendMessage.setText(textToSend);
 			if (debug) {
 				DebugMessages.ok();
-				DebugMessages.print(this.getClass().getSimpleName(), "Publishing message  ");
+				DebugMessages.print(TimeStamp.getCurrentTime(), this.getClass().getSimpleName(), "Publishing message  ");
 			}
 			tPub.publish(sendMessage);
 			if (debug) {
@@ -371,22 +372,22 @@ public abstract class GlimpseAbstractConsumer implements GlimpseConsumer {
 	 */
 	protected TopicSubscriber createSubscriber(TopicConnection connection, InitialContext initContext, String serviceChannel, boolean debug) throws JMSException, NamingException {
 		if (debug) {
-			DebugMessages.print(this.getClass().getSimpleName(),
+			DebugMessages.print(TimeStamp.getCurrentTime(), this.getClass().getSimpleName(),
 					"Creating Session "); }
 		TopicSession subscribeSession = connection.createTopicSession(false,Session.AUTO_ACKNOWLEDGE);
 		if (debug) {
 			DebugMessages.ok();
-			DebugMessages.print(this.getClass().getSimpleName(),
+			DebugMessages.print(TimeStamp.getCurrentTime(), this.getClass().getSimpleName(),
 					"Connecting to channel ");}
 		Topic connectionTopic = (Topic) initContext.lookup(serviceChannel);
 		if (debug) {
 			DebugMessages.ok();
-			DebugMessages.print(this.getClass().getSimpleName(),
+			DebugMessages.print(TimeStamp.getCurrentTime(), this.getClass().getSimpleName(),
 					"Create subscriber ");}
 		TopicSubscriber tSub = subscribeSession.createSubscriber(connectionTopic,"DESTINATION = '" + settings.getProperty("consumerName") + "'", true);
 		if (debug) {
 			DebugMessages.ok();
-			DebugMessages.print(this.getClass().getSimpleName(),
+			DebugMessages.print(TimeStamp.getCurrentTime(), this.getClass().getSimpleName(),
 					"Starting connection ");}
 		connection.start();
 		if (debug) {
@@ -407,7 +408,7 @@ public abstract class GlimpseAbstractConsumer implements GlimpseConsumer {
 	protected ComplexEventRuleActionListDocument createComplexEventRuleActionDocumentFromXMLString(
 			String xmlRule, boolean debug) throws JMSException, XmlException {
 		if (debug)
-			DebugMessages.print(this.getClass().getSimpleName(),
+			DebugMessages.print(TimeStamp.getCurrentTime(), this.getClass().getSimpleName(),
 					"Creating ComplexEventRuleActionListDocument with provided XML ");
 		ComplexEventRuleActionListDocument theDocument = ComplexEventRuleActionListDocument.Factory.parse(xmlRule);
 		if (debug) {
@@ -431,28 +432,28 @@ public abstract class GlimpseAbstractConsumer implements GlimpseConsumer {
 	protected TopicSubscriber connectToTheResponseChannel(TopicConnection connection, String responseChannel, boolean debug) throws JMSException {
 		if (debug) {
 			DebugMessages.ok();
-			DebugMessages.print(this.getClass().getSimpleName(),
+			DebugMessages.print(TimeStamp.getCurrentTime(), this.getClass().getSimpleName(),
 					"Creating Session "); }
 		TopicSession subscribeSession = connection.createTopicSession(false, Session.AUTO_ACKNOWLEDGE);
 		if (debug) {
 			DebugMessages.ok();
-			DebugMessages.print(this.getClass().getSimpleName(),
+			DebugMessages.print(TimeStamp.getCurrentTime(), this.getClass().getSimpleName(),
 					"Connecting to channel ");}
 		Topic connectionTopic = subscribeSession.createTopic(responseChannel);
 		if (debug) {
 			DebugMessages.ok();
-			DebugMessages.print(this.getClass().getSimpleName(),
+			DebugMessages.print(TimeStamp.getCurrentTime(), this.getClass().getSimpleName(),
 					"Create subscriber ");}
 		TopicSubscriber tSub = subscribeSession.createSubscriber(connectionTopic, null, true);
 		tSub.setMessageListener(this);
 		if (debug) {
 			DebugMessages.ok();
-			DebugMessages.print(this.getClass().getSimpleName(),
+			DebugMessages.print(TimeStamp.getCurrentTime(), this.getClass().getSimpleName(),
 					"Starting connection ");}
 		connection.start();
 		if (debug) {
 			DebugMessages.ok(); 
-			DebugMessages.println(this.getClass().getSimpleName(), "Successfully connected to the responseChannel " + responseChannel);
+			DebugMessages.println(TimeStamp.getCurrentTime(), this.getClass().getSimpleName(), "Successfully connected to the responseChannel " + responseChannel);
 			DebugMessages.line(); }
 		 return tSub;
 	}
