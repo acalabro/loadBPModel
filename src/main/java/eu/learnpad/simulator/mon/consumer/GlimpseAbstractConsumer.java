@@ -3,6 +3,7 @@ package eu.learnpad.simulator.mon.consumer;
 import it.cnr.isti.labse.glimpse.xml.complexEventRule.ComplexEventRuleActionListDocument;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
 
@@ -23,6 +24,7 @@ import javax.naming.NamingException;
 import org.apache.commons.net.ntp.TimeStamp;
 import org.apache.xmlbeans.XmlException;
 
+import eu.learnpad.sim.rest.event.ScoreType;
 import eu.learnpad.simulator.mon.exceptions.IncorrectRuleFormatException;
 import eu.learnpad.simulator.mon.utils.DebugMessages;
 import eu.learnpad.simulator.mon.utils.Manager;
@@ -177,11 +179,24 @@ public abstract class GlimpseAbstractConsumer implements GlimpseConsumer {
 					System.out.println("unused = " + this.getAnswerTopicFromTextMessage(msg));
 					newTopic = this.connectToTheResponseChannel(connection, "scoresUpdateResponses" , true);
 					newTopic.setMessageListener(this);
+					firstMessage = false;
 				} catch (IncorrectRuleFormatException e) {
 					System.out.println("IncorrectRuleFromatException raised: INVALID RULE");
 				}
-				firstMessage = false;				
-			}
+				}
+			else {
+					ObjectMessage thePayload = (ObjectMessage)arg0;
+					HashMap<ScoreType, Float> theObj = (HashMap<ScoreType, Float>) thePayload.getObject();
+					System.out.println(ScoreType.ABSOLUTE_BP_SCORE.toString() + " " + theObj.get(ScoreType.ABSOLUTE_BP_SCORE));
+					System.out.println(ScoreType.ABSOLUTE_GLOBAL_SCORE.toString() + " " + theObj.get(ScoreType.ABSOLUTE_GLOBAL_SCORE));
+					System.out.println(ScoreType.ABSOLUTE_SESSION_SCORE.toString() + " " + theObj.get(ScoreType.ABSOLUTE_SESSION_SCORE));
+					System.out.println(ScoreType.BP_COVERAGE.toString() + " " + theObj.get(ScoreType.BP_COVERAGE));
+					System.out.println(ScoreType.BP_SCORE.toString() + " " + theObj.get(ScoreType.BP_SCORE));
+					System.out.println(ScoreType.GLOBAL_SCORE.toString() + " " + theObj.get(ScoreType.GLOBAL_SCORE));
+					System.out.println(ScoreType.RELATIVE_BP_SCORE.toString() + " " + theObj.get(ScoreType.RELATIVE_BP_SCORE));
+					System.out.println(ScoreType.RELATIVE_GLOBAL_SCORE.toString() + " " + theObj.get(ScoreType.RELATIVE_GLOBAL_SCORE));
+					System.out.println(ScoreType.SESSION_SCORE.toString() + " " + theObj.get(ScoreType.SESSION_SCORE));
+				}				
 		} catch (JMSException e) {
 			e.printStackTrace();
 		}
