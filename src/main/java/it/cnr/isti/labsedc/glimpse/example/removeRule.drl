@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ComplexEventRuleActionList xmlns="http://labse.isti.cnr.it/glimpse/xml/ComplexEventRule"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://labse.isti.cnr.it/glimpse/xml/ComplexEventRule ./ComplexEventRule.xsd">
+<Insert RuleType="drools">
+	<RuleName>aGenericRule</RuleName>
+        <RuleBody>
+        import it.cnr.isti.labsedc.glimpse.event.GlimpseBaseEventAbstract; 
+		import it.cnr.isti.labsedc.glimpse.event.GlimpseBaseEvent;
+		import it.cnr.isti.labsedc.glimpse.event.GlimpseBaseEventGeneric;
+		import it.cnr.isti.labsedc.glimpse.event.GlimpseBaseEventSB; 
+		import it.cnr.isti.labsedc.glimpse.utils.DebugMessages; 
+		import org.apache.commons.net.ntp.TimeStamp;
+		import org.drools.base.EnabledBoolean;
+		        
+		declare GlimpseBaseEventSB
+		    @role( event )
+		    @timestamp( timeStamp )
+		end 	
+
+		rule "Remove Rule"
+
+		no-loop true 
+		salience 10 
+		dialect "java" 
+		
+		when
+		
+			$aEvent : GlimpseBaseEventSB();
+		
+		then
+			DebugMessages.println(TimeStamp.getCurrentTime(), "RulesEngine","Received an Event from SmartBuilding sensor: managed and removed");
+			retract($aEvent);
+			drools.getRule().setEnabled(new EnabledBoolean(false));
+		end
+
+        </RuleBody>
+	</Insert>
+</ComplexEventRuleActionList>

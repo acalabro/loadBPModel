@@ -18,24 +18,20 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
   * 
 */
-package eu.learnpad.simulator.mon.example;
+package it.cnr.isti.labsedc.glimpse.example;
 
-import it.cnr.isti.labse.glimpse.xml.complexEventException.ComplexEventException;
-import it.cnr.isti.labse.glimpse.xml.complexEventResponse.ComplexEventResponse;
-import it.cnr.isti.labse.glimpse.xml.complexEventRule.ComplexEventRuleActionListDocument;
+import it.cnr.isti.labsedc.glimpse.xml.complexEventException.ComplexEventException;
+import it.cnr.isti.labsedc.glimpse.xml.complexEventResponse.ComplexEventResponse;
+import it.cnr.isti.labsedc.glimpse.xml.complexEventRule.ComplexEventRuleActionListDocument;
+import it.cnr.isti.labsedc.glimpse.consumer.GlimpseAbstractConsumer;
+import it.cnr.isti.labsedc.glimpse.utils.Manager;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.ObjectMessage;
 
-import eu.learnpad.sim.rest.event.ScoreType;
-import eu.learnpad.simulator.mon.consumer.GlimpseAbstractConsumer;
-import eu.learnpad.simulator.mon.utils.Manager;
 
 /**
  * This class is an example of how to extend the {@link GlimpseAbstractConsumer} class, <br />
@@ -59,42 +55,21 @@ public class MyGlimpseConsumer extends GlimpseAbstractConsumer {
 	 * 
 	 */
 	
-	public MyGlimpseConsumer(Properties settings,
-			String plainTextRule, List<String> usersInvolvedID, String sessionID, String bpmnID) {
-		super(settings, plainTextRule, usersInvolvedID, sessionID, bpmnID);
+	public MyGlimpseConsumer(Properties settings, String theRuleToSend) {
+		super(settings, theRuleToSend);
 	}
 
 	
 	@Override
 	public void messageReceived(Message arg0) throws JMSException {
-		try {
-			ObjectMessage responseFromMonitoring = (ObjectMessage) arg0;	
-			if (responseFromMonitoring.getObject() instanceof ComplexEventException) {
-				ComplexEventException exceptionReceived = (ComplexEventException) responseFromMonitoring.getObject();
-				System.out.println("Exception ClassName: " + exceptionReceived.getClassName() + "\n");
-			}
-			else {
-				if (responseFromMonitoring.getObject() instanceof Map) {
-					HashMap<ScoreType, Float> theScores = new HashMap<>();
-					System.out.println(theScores.get(ScoreType.ABSOLUTE_BP_SCORE));
-					System.out.println(theScores.get(ScoreType.ABSOLUTE_GLOBAL_SCORE));
-					System.out.println(theScores.get(ScoreType.ABSOLUTE_SESSION_SCORE));
-					System.out.println(theScores.get(ScoreType.BP_COVERAGE));
-					System.out.println(theScores.get(ScoreType.BP_SCORE));
-					System.out.println(theScores.get(ScoreType.GLOBAL_SCORE));
-					System.out.println(theScores.get(ScoreType.RELATIVE_BP_SCORE));
-					System.out.println(theScores.get(ScoreType.RELATIVE_GLOBAL_SCORE));
-					System.out.println(theScores.get(ScoreType.SESSION_SCORE));
-				}
-				else {
-				ComplexEventResponse resp = (ComplexEventResponse) responseFromMonitoring.getObject();
-					System.out.println("Response value: " + resp.getResponseValue());
-				}
-			}
+		ObjectMessage responseFromMonitoring = (ObjectMessage) arg0;	
+		if (responseFromMonitoring.getObject() instanceof ComplexEventException) {
+			ComplexEventException exceptionReceived = (ComplexEventException) responseFromMonitoring.getObject();
+			System.out.println("Exception ClassName: " + exceptionReceived.getClassName() + "\n");
 		}
-		catch(ClassCastException asd) {
-		}
+		else {
+			ComplexEventResponse resp = (ComplexEventResponse) responseFromMonitoring.getObject();
+				System.out.println("Response value: " + resp.getResponseValue());
+			}
 	}
-
-	
 }

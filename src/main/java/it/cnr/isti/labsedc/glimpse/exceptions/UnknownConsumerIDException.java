@@ -19,22 +19,22 @@
   * 
 */
 
-package eu.learnpad.simulator.mon.exceptions;
+package it.cnr.isti.labsedc.glimpse.exceptions;
 
 /**
  * This exception will be thrown when the Monitoring Manager<br />
- * will receive an invalid rule.<br />
- * The rule is contained into the field RuleBody of the ComplexEventRuleDocument object
+ * is unable to find the ID of the Consumer that send a evaluation request.
  * 
  * @author Antonello Calabr&ograve;
  * @version 3.2
  */
 
-public class IncorrectRuleFormatException extends Exception {
-	private static final long serialVersionUID = -2577929182751048650L;
+public class UnknownConsumerIDException extends Exception {
 
-	public IncorrectRuleFormatException()
+	private static final long serialVersionUID = 1L;
+
+	public UnknownConsumerIDException()
 	{
-		System.out.println("Check rule format, may contains errors");
+		System.out.println("Check request ID, may contains errors");
 	}
 }

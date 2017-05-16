@@ -1,4 +1,4 @@
-package eu.learnpad.simulator.mon.utils;
+package it.cnr.isti.labsedc.glimpse.utils;
 
 /**
  * This class provides print function for debug

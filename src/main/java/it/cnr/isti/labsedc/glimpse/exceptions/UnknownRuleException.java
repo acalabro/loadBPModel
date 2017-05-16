@@ -19,7 +19,7 @@
   * 
 */
 
-package eu.learnpad.simulator.mon.exceptions;
+package it.cnr.isti.labsedc.glimpse.exceptions;
 
 /**
  * This exception will be thrown when the Monitoring Manager<br />

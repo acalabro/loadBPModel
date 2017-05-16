@@ -19,11 +19,11 @@
   * 
 */
 
-package eu.learnpad.simulator.mon.event;
+package it.cnr.isti.labsedc.glimpse.event;
 
 import java.io.Serializable;
 
-import eu.learnpad.simulator.mon.event.GlimpseBaseEvent;
+import it.cnr.isti.labsedc.glimpse.event.GlimpseBaseEvent;
 
 /**
  * 

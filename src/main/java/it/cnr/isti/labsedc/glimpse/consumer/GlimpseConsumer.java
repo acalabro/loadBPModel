@@ -1,4 +1,4 @@
-package eu.learnpad.simulator.mon.consumer;
+package it.cnr.isti.labsedc.glimpse.consumer;
 
 import javax.jms.JMSException;
 import javax.jms.MessageListener;
@@ -6,8 +6,8 @@ import javax.jms.TopicConnection;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-import eu.learnpad.simulator.mon.example.MyGlimpseConsumer;
-import it.cnr.isti.labse.glimpse.xml.complexEventRule.ComplexEventRuleActionListDocument;
+import it.cnr.isti.labsedc.glimpse.xml.complexEventRule.ComplexEventRuleActionListDocument;
+import it.cnr.isti.labsedc.glimpse.example.MyGlimpseConsumer;
 
 
 /**

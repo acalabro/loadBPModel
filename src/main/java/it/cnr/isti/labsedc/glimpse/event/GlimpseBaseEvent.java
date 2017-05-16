@@ -19,7 +19,7 @@
   * 
 */
 
-package eu.learnpad.simulator.mon.event;
+package it.cnr.isti.labsedc.glimpse.event;
 
 /**
  * The GlimpseBaseEvent <T> is the generic basic event that the monitoring infrastructure<br />

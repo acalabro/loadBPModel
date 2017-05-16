@@ -1,4 +1,4 @@
-package eu.learnpad.simulator.mon.exceptions;
+package it.cnr.isti.labsedc.glimpse.exceptions;
 
 public class UnknownEnablerIDException extends Exception {
 

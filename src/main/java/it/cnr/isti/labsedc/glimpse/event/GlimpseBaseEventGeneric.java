@@ -1,4 +1,4 @@
-package eu.learnpad.simulator.mon.event;
+package it.cnr.isti.labsedc.glimpse.event;
 
 public class GlimpseBaseEventGeneric<T> extends GlimpseBaseEventAbstract<T> {
 

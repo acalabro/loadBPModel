@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ComplexEventRuleActionList xmlns="http://labse.isti.cnr.it/glimpse/xml/ComplexEventRule"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://labse.isti.cnr.it/glimpse/xml/ComplexEventRule ./ComplexEventRule.xsd">
+<Insert RuleType="drools">
+	<RuleName>Humidity Check</RuleName>
+        <RuleBody>
+        import it.cnr.isti.labsedc.glimpse.event.GlimpseBaseEventAbstract; 
+		import it.cnr.isti.labsedc.glimpse.event.GlimpseBaseEvent;
+		import it.cnr.isti.labsedc.glimpse.event.GlimpseBaseEventGeneric;
+		import it.cnr.isti.labsedc.glimpse.event.GlimpseBaseEventSB; 
+		import it.cnr.isti.labsedc.glimpse.utils.DebugMessages; 
+		import org.apache.commons.net.ntp.TimeStamp;
+		import org.drools.base.EnabledBoolean;
+		import it.cnr.isti.labsedc.glimpse.utils.MailNotification;
+		        
+		declare GlimpseBaseEventSB
+		    @role( event )
+		    @timestamp( timeStamp )
+		end 	
+
+		rule "Humidity check"
+
+		no-loop true 
+		salience 10 
+		dialect "java" 
+		
+		when
+    		Number( doubleValue > 70.0f ) 
+    			from accumulate(
+        				$aEvent:GlimpseBaseEventSB( $hum : this.getEventData(), this.getExtraDataField() == "C70" ) over window:time( 10m ),
+        	average( $hum ) )
+		
+		
+		then
+			DebugMessages.println(TimeStamp.getCurrentTime(), "RulesEngine","Average humidity level in room: C70 is over 70%.");
+			MailNotification.NotifyToAdministrator("Humidity check rule","Average humidity level in room: C70 is over 70%.");
+		end
+
+        </RuleBody>
+	</Insert>
+</ComplexEventRuleActionList>

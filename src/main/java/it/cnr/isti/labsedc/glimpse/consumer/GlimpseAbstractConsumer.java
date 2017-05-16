@@ -1,10 +1,11 @@
-package eu.learnpad.simulator.mon.consumer;
+package it.cnr.isti.labsedc.glimpse.consumer;
 
-import it.cnr.isti.labse.glimpse.xml.complexEventRule.ComplexEventRuleActionListDocument;
+import it.cnr.isti.labsedc.glimpse.xml.complexEventRule.ComplexEventRuleActionListDocument;
+import it.cnr.isti.labsedc.glimpse.exceptions.IncorrectRuleFormatException;
+import it.cnr.isti.labsedc.glimpse.utils.DebugMessages;
+import it.cnr.isti.labsedc.glimpse.utils.Manager;
 
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Properties;
 
 import javax.jms.JMSException;
@@ -23,11 +24,6 @@ import javax.naming.NamingException;
 
 import org.apache.commons.net.ntp.TimeStamp;
 import org.apache.xmlbeans.XmlException;
-
-import eu.learnpad.sim.rest.event.ScoreType;
-import eu.learnpad.simulator.mon.exceptions.IncorrectRuleFormatException;
-import eu.learnpad.simulator.mon.utils.DebugMessages;
-import eu.learnpad.simulator.mon.utils.Manager;
 
 /**
  *
@@ -68,30 +64,6 @@ public abstract class GlimpseAbstractConsumer implements GlimpseConsumer {
 	/**
 	 * 
 	 * This constructor allow to create a {@link GlimpseAbstractConsumer} object<br />
-	 * providing the {@link #settings} properties and a {@link String} object that will be<br />
-	 * automatically converted to a {@link ComplexEventRuleActionListDocument} object.<br />
-	 * 
-	 * @param settings can be generated automatically using {@link Manager#createConsumerSettingsPropertiesObject(String, String, String, String, String, String, boolean, String)}.
-	 * @param plainTextRule a plain text rule is a String containing the Drools<br />
-	 * (or other cep engine implemented) rule that can be generated structured<br />
-	 * using the {@link ComplexEventRuleActionListDocument} classes.<br />
-	 * For a rule example see the exampleRule.xml file. 
-	 */
-	
-	public GlimpseAbstractConsumer(Properties settings, String plainTextRule, String usersInvolvedID, String sessionID, String bpmnID) {
-		init(settings);
-		try {
-			this.sendTextMessageWithLearnersList(connection, initContext, "serviceTopic", plainTextRule, usersInvolvedID, sessionID, bpmnID, true);
-		} catch (JMSException e) {
-			e.printStackTrace();
-		} catch (NamingException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	/**
-	 * 
-	 * This constructor allow to create a {@link GlimpseAbstractConsumer} object<br />
 	 * providing the {@link #settings} properties and a {@link ComplexEventRuleActionListDocument} object.
 	 * 
 	 * @param settings can be generated automatically using {@link Manager#createConsumerSettingsPropertiesObject(String, String, String, String, String, String, boolean, String)}.
@@ -99,11 +71,11 @@ public abstract class GlimpseAbstractConsumer implements GlimpseConsumer {
 	 * that contains the set of rule that will be loaded on the CEP knowledge base for the evaluation.
 	 * The {@link ComplexEventRuleActionListDocument} object, can be generated from a string, using the method 
 	 */
-	public GlimpseAbstractConsumer(Properties settings, ComplexEventRuleActionListDocument complexEventRuleXML) {
+	public GlimpseAbstractConsumer(Properties settings, String plainTextMessage) {
 				
 		try {
 			init(settings);
-			this.sendActionListMessage(connection, initContext, "serviceTopic", complexEventRuleXML, true);
+			this.sendTextMessage(connection, initContext, "serviceTopic", plainTextMessage, true);
 		} catch (NamingException e) {
 			e.printStackTrace();
 		} catch (JMSException e) {
@@ -111,60 +83,6 @@ public abstract class GlimpseAbstractConsumer implements GlimpseConsumer {
 		}
 	}
 	
-	public GlimpseAbstractConsumer(Properties settings, String messagePayload, List<String> learnersInvolved,
-			String sessionID, String bpmnID) {
-		try {
-			init(settings);
-			this.sendTextMessageWithLearnersListAsArray(connection, initContext, "serviceTopic", messagePayload, learnersInvolved, sessionID, bpmnID, true);
-		} catch (NamingException e) {
-			e.printStackTrace();
-		} catch (JMSException e) {
-			e.printStackTrace();
-		}
-	}
-
-
-	private void sendTextMessageWithLearnersListAsArray(TopicConnection connection, InitialContext initContext,
-			String serviceTopic, String messagePayload, List<String> learnersInvolved, String sessionID, String bpmnID,
-			boolean debug) throws NamingException, JMSException {
-		
-		if (debug) {
-			DebugMessages.print(TimeStamp.getCurrentTime(), this.getClass().getSimpleName(), "Creating Session ");
-		}
-		TopicSession publishSession = connection.createTopicSession(false, Session.AUTO_ACKNOWLEDGE);
-		if (debug) {
-			DebugMessages.ok();
-			DebugMessages.print(TimeStamp.getCurrentTime(), this.getClass().getSimpleName(), "Looking up for channel ");
-		}
-		Topic connectionTopic = (Topic) initContext.lookup(serviceTopic);
-		if (debug) {
-			DebugMessages.ok();
-			DebugMessages.print(TimeStamp.getCurrentTime(), this.getClass().getSimpleName(), "Creating Publisher ");
-		}
-		TopicPublisher tPub = publishSession.createPublisher(connectionTopic);
-		if (debug) {
-			DebugMessages.ok();
-			DebugMessages.print(TimeStamp.getCurrentTime(), this.getClass().getSimpleName(), "Creating Message ");
-		}
-		TextMessage sendMessage = publishSession.createTextMessage();
-		sendMessage.setObjectProperty("USERSINVOLVEDID", learnersInvolved);
-		sendMessage.setStringProperty("SESSIONID", sessionID);
-		sendMessage.setStringProperty("BPMNID", bpmnID);
-		sendMessage.setStringProperty("SENDER", settings.getProperty("consumerName"));
-		sendMessage.setStringProperty("DESTINATION", "monitor");
-		sendMessage.setText(messagePayload);
-		if (debug) {
-			DebugMessages.ok();
-			DebugMessages.print(TimeStamp.getCurrentTime(), this.getClass().getSimpleName(), "Publishing message  ");
-		}
-		tPub.publish(sendMessage);
-		if (debug) {
-			DebugMessages.ok();
-			DebugMessages.line();
-		}
-		
-	}
-
 
 	/* (non-Javadoc)
 	 * @see javax.jms.MessageListener#onMessage(javax.jms.Message)
@@ -176,8 +94,7 @@ public abstract class GlimpseAbstractConsumer implements GlimpseConsumer {
 				TextMessage msg = (TextMessage)arg0;
 				TopicSubscriber newTopic;
 				try {
-					System.out.println("unused = " + this.getAnswerTopicFromTextMessage(msg));
-					newTopic = this.connectToTheResponseChannel(connection, "scoresUpdateResponses" , true);
+					newTopic = this.connectToTheResponseChannel(connection, this.getAnswerTopicFromTextMessage(msg) , true);
 					newTopic.setMessageListener(this);
 					firstMessage = false;
 				} catch (IncorrectRuleFormatException e) {
@@ -185,17 +102,7 @@ public abstract class GlimpseAbstractConsumer implements GlimpseConsumer {
 				}
 				}
 			else {
-					ObjectMessage thePayload = (ObjectMessage)arg0;
-					HashMap<ScoreType, Float> theObj = (HashMap<ScoreType, Float>) thePayload.getObject();
-					System.out.println(ScoreType.ABSOLUTE_BP_SCORE.toString() + " " + theObj.get(ScoreType.ABSOLUTE_BP_SCORE));
-					System.out.println(ScoreType.ABSOLUTE_GLOBAL_SCORE.toString() + " " + theObj.get(ScoreType.ABSOLUTE_GLOBAL_SCORE));
-					System.out.println(ScoreType.ABSOLUTE_SESSION_SCORE.toString() + " " + theObj.get(ScoreType.ABSOLUTE_SESSION_SCORE));
-					System.out.println(ScoreType.BP_COVERAGE.toString() + " " + theObj.get(ScoreType.BP_COVERAGE));
-					System.out.println(ScoreType.BP_SCORE.toString() + " " + theObj.get(ScoreType.BP_SCORE));
-					System.out.println(ScoreType.GLOBAL_SCORE.toString() + " " + theObj.get(ScoreType.GLOBAL_SCORE));
-					System.out.println(ScoreType.RELATIVE_BP_SCORE.toString() + " " + theObj.get(ScoreType.RELATIVE_BP_SCORE));
-					System.out.println(ScoreType.RELATIVE_GLOBAL_SCORE.toString() + " " + theObj.get(ScoreType.RELATIVE_GLOBAL_SCORE));
-					System.out.println(ScoreType.SESSION_SCORE.toString() + " " + theObj.get(ScoreType.SESSION_SCORE));
+				System.out.println("TODO");
 				}				
 		} catch (JMSException e) {
 			e.printStackTrace();
@@ -335,45 +242,7 @@ public abstract class GlimpseAbstractConsumer implements GlimpseConsumer {
 	
 
 		
-		public void sendTextMessageWithLearnersList(TopicConnection connection, InitialContext initContext,
-				String serviceChannel, String textToSend, String usersInvolvedID, String sessionID, String bpmnID, boolean debug)	throws JMSException, NamingException {
-			if (debug) {
-				DebugMessages.print(TimeStamp.getCurrentTime(), this.getClass().getSimpleName(), "Creating Session ");
-			}
-			TopicSession publishSession = connection.createTopicSession(false, Session.AUTO_ACKNOWLEDGE);
-			if (debug) {
-				DebugMessages.ok();
-				DebugMessages.print(TimeStamp.getCurrentTime(), this.getClass().getSimpleName(), "Looking up for channel ");
-			}
-			Topic connectionTopic = (Topic) initContext.lookup(serviceChannel);
-			if (debug) {
-				DebugMessages.ok();
-				DebugMessages.print(TimeStamp.getCurrentTime(), this.getClass().getSimpleName(), "Creating Publisher ");
-			}
-			TopicPublisher tPub = publishSession.createPublisher(connectionTopic);
-			if (debug) {
-				DebugMessages.ok();
-				DebugMessages.print(TimeStamp.getCurrentTime(), this.getClass().getSimpleName(), "Creating Message ");
-			}
-			TextMessage sendMessage = publishSession.createTextMessage();
-			sendMessage.setStringProperty("USERSINVOLVEDID", usersInvolvedID);
-			sendMessage.setStringProperty("SESSIONID", sessionID);
-			sendMessage.setStringProperty("BPMNID", bpmnID);
-			sendMessage.setStringProperty("SENDER", settings.getProperty("consumerName"));
-			sendMessage.setStringProperty("DESTINATION", "monitor");
-			sendMessage.setText(textToSend);
-			if (debug) {
-				DebugMessages.ok();
-				DebugMessages.print(TimeStamp.getCurrentTime(), this.getClass().getSimpleName(), "Publishing message  ");
-			}
-			tPub.publish(sendMessage);
-			if (debug) {
-				DebugMessages.ok();
-				DebugMessages.line();
-			}
-		}
-		
-	
+
 	/**
 	 * This method creates a subscriber object to send the evaluation request to the monitoring engine.
 	 * 

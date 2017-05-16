@@ -1,4 +1,4 @@
-package eu.learnpad.simulator.mon.utils;
+package it.cnr.isti.labsedc.glimpse.utils;
 
 import java.io.BufferedInputStream;
 import java.io.DataInputStream;
@@ -9,7 +9,10 @@ import java.util.Properties;
 
 import org.apache.commons.net.ntp.TimeStamp;
 
-import eu.learnpad.simulator.mon.consumer.GlimpseAbstractConsumer;
+import it.cnr.isti.labsedc.glimpse.xml.complexEventRule.ComplexEventRuleActionListDocument;
+import it.cnr.isti.labsedc.glimpse.xml.complexEventRule.ComplexEventRuleActionType;
+import it.cnr.isti.labsedc.glimpse.xml.complexEventRule.ComplexEventRuleType;
+import it.cnr.isti.labsedc.glimpse.consumer.GlimpseAbstractConsumer;
 
 /**
  * This class should be used only for debug purpose<br />
@@ -144,4 +147,22 @@ public class Manager
 				DebugMessages.line(); }
 			return settings;
 		}
+
+	public static ComplexEventRuleActionListDocument createComplexEventRulesFromString(String ruleBody, String ruleName, String ruleType) {
+
+		ComplexEventRuleActionListDocument theMainRulesContainer = ComplexEventRuleActionListDocument.Factory.newInstance();
+		
+		ComplexEventRuleActionType aGenericRuleContainer = ComplexEventRuleActionType.Factory.newInstance();
+		
+		ComplexEventRuleType aSingleInsertRule = aGenericRuleContainer.addNewInsert();
+		aSingleInsertRule.setRuleName(ruleName);
+		aSingleInsertRule.setRuleType(ruleType);
+		aSingleInsertRule.setRuleBody(ruleBody);
+		
+		aSingleInsertRule.set(aGenericRuleContainer);
+		theMainRulesContainer.setComplexEventRuleActionList(aGenericRuleContainer);
+		
+
+		return theMainRulesContainer;
+	}
 }
